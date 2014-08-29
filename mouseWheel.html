@@ -1,0 +1,136 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>mouse wheel</title>
+<style type="text/css">
+	html,body,ul{padding:0;margin:0}
+	ul{list-style:none;}
+	ul>li{float:left;width:200px;}
+	ul>li>img{width:100%;cursor:pointer;}
+	
+	#mask{width:100%;height:100%;position:fixed;top:0px;left:0px;background:#000;filter:alpha(opacity=20);opacity:.2;z-index:2;display:none;}
+	#close{width:44px;height:44px;position:fixed;top:0px;left:100%;background:#fff;margin-left:-44px;display:none;z-index:4;}
+	#imgcontainer{position:fixed;-webkit-box-shadow:0 3px 8px rgba(0,0,0,.4);-moz-box-shadow:0 3px 8px rgba(0,0,0,.4);box-shadow:0 3px 8px rgba(0,0,0,.4);z-index:3;display:none;}
+</style>
+
+
+</head>
+<body>
+	<ul id='imgbox'>
+		<li><img src="http://a.niupic.com/images/2014/08/04/53df5dd3c2860.jpg" alt="" /></li>
+		<li><img src="http://a.niupic.com/images/2014/08/04/53df5dd59f9ef.jpg" alt="" /></li>
+		<li><img src="http://a.niupic.com/images/2014/08/04/53df5e1347f6a.jpg" alt="" /></li>
+	</ul>
+	<!-- 特效部分 -->
+	<div id="mask"></div>
+	<div id="close"></div>
+	
+	<img src="1.jpg" alt=""  id="imgcontainer"/>	
+	
+<script type="text/javascript">
+	
+	function $(id){
+		return (!id)?null:document.getElementById(id);
+	}
+	var mask = $("mask"),
+			imgbox = $("imgbox").getElementsByTagName("img"),
+			close = $("close"),
+			imgcontainer = $("imgcontainer");
+			
+	(function(window,undefined){
+		function ImgBox(){};
+		ImgBox.prototype={
+			showbox:function(e){
+				mask.style.display='block';
+				close.style.display = 'block';
+				imgcontainer.style.display='block';
+				imgcontainer.src=e.src;
+				imgcontainer.style.width='500px';
+				imgcontainer.style.top='50%';
+				imgcontainer.style.left='50%';
+				imgcontainer.style.marginLeft='-250px';
+				imgcontainer.style.marginTop='-150px';
+			},
+			hiddenbox:function(){
+				Imgbox.showbox(imgcontainer);
+				mask.style.display='none';
+				close.style.display = 'none';
+				imgcontainer.style.display='none';
+			},
+			upwheel:function(){
+				var width = imgcontainer.clientWidth,
+					height = imgcontainer.clientHeight,
+					marleft = parseInt(imgcontainer.style.marginLeft) - 5,
+					martop = parseInt(imgcontainer.style.marginTop) -5*height/width;
+				imgcontainer.style.width = width + 10 +'px';
+				imgcontainer.style.marginLeft = marleft +'px';
+				imgcontainer.style.marginTop = martop +'px';
+			},
+			downwheel:function(){
+			var width = imgcontainer.clientWidth,
+					height = imgcontainer.clientHeight,
+					marleft = parseInt(imgcontainer.style.marginLeft) + 5,
+					martop = parseInt(imgcontainer.style.marginTop) + 5*height/width;
+				imgcontainer.style.width = width - 10+'px';
+				imgcontainer.style.marginLeft = marleft +'px';
+				imgcontainer.style.marginTop = martop +'px';
+			}
+		}
+		var  Imgbox=new ImgBox();
+		window.Imgbox=Imgbox;
+	})(window);
+	
+	(function(){
+		for(var i = 0; i< imgbox.length;i++)
+		{
+			if(document.addEventListener)
+			{
+				imgbox[i].addEventListener("click",function(){
+					Imgbox.showbox(this);
+				},false)
+			}
+			else{
+				imgbox[i].attachEvent("onclick",function(event){
+					var event = event || window.event; 
+					Imgbox.showbox.call(imgbox[i],window.event.srcElement);
+				},false);
+			}
+			
+		}
+		
+		if(document.addEventListener)
+		{
+			close.addEventListener("click",function(){
+				Imgbox.hiddenbox();
+			},false)
+		}
+		else{
+			close.attachEvent("onclick",function(event){
+				var event = event || window.event; 
+				Imgbox.hiddenbox.call(close,window.event.srcElement);
+			},false);
+		}
+		
+		mouseWheel(document,function(event){
+				var e=event||window.event;
+				var detail=-e.detail||parseInt(e.wheelDelta/40);
+					switch (detail){
+						case -3:
+							Imgbox.downwheel();
+						break;
+						case 3:
+							Imgbox.upwheel();
+						break;
+					}
+			});
+		
+		
+	})();
+
+	function mouseWheel(elem,callback){
+		(/firefox/i).test(navigator.userAgent)?elem.addEventListener("DOMMouseScroll",callback,false):elem.onmousewheel=callback;	
+	}
+	
+</script>
+</body>
+</html>
