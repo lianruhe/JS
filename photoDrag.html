@@ -1,0 +1,141 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">  
+<html xmlns="http://www.w3.org/1999/xhtml">  
+    <head>  
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />  
+        <meta http-equiv="Content-Language" content="gb2312" />   
+        <title>照片拖拽墙</title>  
+        <meta name="description" content="" />  
+        <link rel="stylesheet" type="text/css" href="" />  
+        <link rel="shortcut icon" href=""/>  
+        <link rel="icon" href=""/>  
+		<style>
+			*{margin:0;padding:0;border:0;}
+			body{background:#333;}
+			#imgWrap{width:666px;height:516px;margin:50px auto;padding:10px;list-style:none;background:#eee;overflow:hidden;}
+			#imgWrap li{float:left;padding:10px;}
+			#imgWrap img{display:block;width:200px;height:150px;border:1px solid #eee;}	
+			
+		</style>
+	</head>
+	<body>
+		<ul id="imgWrap">
+            <li><img src="http://www.w3cfuns.com/data/attachment/album/201409/01/142415aq8h7euyhmwgqcmi.jpg" alt="franky" title=""/></li>
+            <li><img src="http://www.w3cfuns.com/data/attachment/album/201409/01/142414gl4242nlcvqqjvjl.jpg" alt="brook" title=""/></li>
+            <li><img src="http://www.w3cfuns.com/data/attachment/album/201409/01/142414qmyotm0tj545mmjy.jpg" alt="zoro" title=""/></li>
+            <li><img src="http://www.w3cfuns.com/data/attachment/album/201409/01/142412pz5gki7ee8eng8jk.jpg" alt="wusuopu" title=""/></li>
+            <li><img src="http://www.w3cfuns.com/data/attachment/album/201409/01/142412hrra0cs8shk0g0jh.jpg" alt="sanji" title=""/></li>
+            <li><img src="http://www.w3cfuns.com/data/attachment/album/201409/01/142410ch7450yh6a6lllyc.jpg" alt="chopper" title=""/></li>
+            <li><img src="http://www.w3cfuns.com/data/attachment/album/201409/01/142409ystl34kdtmjbsjmo.jpg" alt="nami" title=""/></li>
+            <li><img src="http://www.w3cfuns.com/data/attachment/album/201409/01/142408c141udppykrpkgva.jpg" alt="robin" title=""/></li>
+            <li><img src="http://www.w3cfuns.com/data/attachment/album/201409/01/142407dfre0tqrz80itr90.jpg" alt="luffy" title=""/></li>
+        </ul> 
+		<script>
+			//拖拽封装
+			(function(window,undefined){
+				//移动效果
+	
+					function beginmove(elem,ll,tt,num){
+						var i = 1;
+						var everyl = (ll - parseInt(elem.style.left))/num;// 算出每次移动的距离
+						var everyt =(tt - parseInt(elem.style.top))/num;
+						function fun(){
+							//alert(l+" and "+ll +" templ "+ templ);
+							var curll = parseInt(elem.style.left);//现在的位置
+							var curtt = parseInt(elem.style.top);
+							if( i == num)
+							{
+								elem.style.left = ll+ 'px';
+								elem.style.top = tt + 'px';
+								elem.style.zIndex = 0;
+								clearInterval(elem.dataTimer);
+								//beginmove(elem,ll,tt,50);
+								initpos();
+								return;
+							}	
+							//alert(l + templ + 'px');
+							elem.style.left = curll + everyl+ 'px';
+							elem.style.top =  curtt + everyt + 'px';
+							i++;
+						}
+						
+						elem.dataTimer = setInterval(fun,20);//没20毫秒移动一次
+					}
+					
+				
+				
+				//初始化各个图片的位置
+				function initpos(){
+					photos= document.getElementById("imgWrap").children;
+					for(var i = photos.length-1; i >= 0; i--)
+					{
+						pos[i] = {posl:photos[i].offsetLeft,
+										post:photos[i].offsetTop};				
+						
+						photos[i].style.left = photos[i].offsetLeft + 'px';
+						photos[i].style.top = photos[i].offsetTop+ 'px';
+						photos[i].style.position = 'absolute';
+						dnd(photos[i],i);
+						
+					}
+					//alert("init");
+				}
+				//交换位置
+				function exchangePos(index1,index2){
+					
+					/*photos[index1].style.left = pos[index2].posl + 'px';
+					photos[index1].style.top = pos[index2].post + 'px';
+					photos[index2].style.left = pos[index1].posl + 'px';
+					photos[index2].style.top = pos[index1].post + 'px';*/
+					beginmove(photos[index1],pos[index2].posl,pos[index2].post,30);
+					beginmove(photos[index2],pos[index1].posl,pos[index1].post,30);
+					
+				}
+				
+				//为元素添加拖放事件
+				function dnd(elem,i){
+	
+					elem.ondragover = function(e){
+						e = e || window.event;
+						e.preventDefault();
+	
+						elem.children[0].style.borderColor = 'red';
+					};
+					
+					elem.ondragleave = function(){
+						elem.children[0].style.borderColor = '#efefef';
+					};
+					
+					elem.ondragstart = function(e){
+						e = e || window.event;
+						e.dataTransfer.setData("Text",i);
+						elem.style.zIndex="3";
+					};
+					
+					elem.ondrop = function(e){					
+						e = e || window.event;
+						e.preventDefault();
+						
+						elem.children[0].style.borderColor = '#efefef';
+						elem.style.zIndex = '2';
+						var data=e.dataTransfer.getData("Text");
+						
+						exchangePos(data,i);
+					};
+					
+				}
+				//为元素添加方法
+				/*HTMLUListElement.dnd = dnd;
+				alert(document.getElementById("imgWrap").dnd);*/
+				
+				var photos=[],pos=[];	
+				window.onload = function(){
+					
+					initpos();
+				};
+	
+			})(window);
+			
+			
+		</script>
+	</body>
+</html>
