@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">  
+<html xmlns="http://www.w3.org/1999/xhtml">  
+    <head>  
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />  
+        <meta http-equiv="Content-Language" content="gb2312" />   
+        <title></title>  
+        <meta name="description" content="" />  
+        <link rel="stylesheet" type="text/css" href="" />  
+        <link rel="shortcut icon" href=""/>  
+        <link rel="icon" href=""/>  
+		<style>
+			*{margin:0;padding:0;}
+			#pic{position:relative;margin:30px auto;width:470px;height:150px;}
+			img{vertical-align:bottom;border:none;}
+		</style>
+   </head>
+<body>
+	<div id="pic">
+		<img src="http://www.w3cfuns.com/data/attachment/album/201409/05/191749oqqy1y0dnls7yds0.jpg" />
+		<img src="http://www.w3cfuns.com/data/attachment/album/201409/05/191749p3gp7zlxtfydytdy.jpg" />
+		<img src="http://www.w3cfuns.com/data/attachment/album/201409/05/191749fm77hchnf7pv0qh2.jpg" />
+		<img src="http://www.w3cfuns.com/data/attachment/album/201409/05/191749m0yv9hvw0wo9b8hk.jpg" />
+		<img src="http://www.w3cfuns.com/data/attachment/album/201409/05/191748l511rg51d9re1e11.jpg" />
+	</div>
+	<script>
+		var list = document.getElementById('pic').children;
+		for(var i = 0;i<list.length;i++)
+		{
+			list[i].style.position = 'absolute';
+			list[i].style.left = '0px';
+			list[i].style.top = '0px';
+			list[i].style.opacity = 0;
+		}
+		list[0].style.opacity = 10;
+		
+	function fadeOut(e,time){
+		if(e==="string") 
+			e=document.getElementById(e);
+		if(!time) time=500;
+
+		var ease =Math.sqrt;
+		var start =(new Date()).getTime();
+		animate();
+
+		function animate(){
+
+			var elapsed =(new Date()).getTime()-start;
+			var fraction = elapsed/time;
+			if(fraction < 1){
+				var opacity =1-ease(fraction);
+				e.style.opacity = String(opacity);
+				setTimeout(animate,Math.min(25,time-elapsed));
+			}
+			else{
+				e.style.opacity = "0";
+				callback();
+			}
+		}	
+	}
+	function callback(){
+		list[cur-1].style.zIndex = cur-1;
+			list[cur].style.zIndex = cur;
+	}
+		var cur = 0;
+		setInterval(function(){
+			var next = (cur + 1) % 5;
+			list[cur].style.zIndex = 10;
+			list[next].style.zIndex = 5;			
+			list[next].style.opacity = 1;
+			fadeOut(list[cur],2000);
+			cur = next;
+		},3000);
+	</script>
+</body>
+</html>
