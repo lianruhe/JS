@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">  
+<html xmlns="http://www.w3.org/1999/xhtml">  
+    <head>  
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />  
+        <meta http-equiv="Content-Language" content="gb2312" />   
+        <title></title>  
+        <meta name="description" content="" />  
+        <link rel="stylesheet" type="text/css" href="" />  
+        <link rel="shortcut icon" href=""/>  
+        <link rel="icon" href=""/>  
+		<style>
+			*{margin:0;padding:0;border:0;}
+			img{vertical-align:bottom;}
+			.clear:after{content:"";display:block;clear:both;}
+			#scrollPic{width:470px;margin:30px auto 0px;overflow:hidden;}
+			ul{width:2350px;height:150px;position:relative;}
+			ul li{float:left;list-style:none;}
+		</style>
+		
+   </head>
+<body>
+	<div id="scrollPic">
+		<ul class="clear">
+			<li><a href="#"><img src="http://www.w3cfuns.com/data/attachment/album/201409/05/191749oqqy1y0dnls7yds0.jpg" /></a></li>
+			<li><a href="#"><img src="http://www.w3cfuns.com/data/attachment/album/201409/05/191749p3gp7zlxtfydytdy.jpg" /></a></li>
+			<li><a href="#"><img src="http://www.w3cfuns.com/data/attachment/album/201409/05/191749fm77hchnf7pv0qh2.jpg" /></a></li>
+			<li><a href="#"><img src="http://www.w3cfuns.com/data/attachment/album/201409/05/191749m0yv9hvw0wo9b8hk.jpg" /></a></li>
+			<li><a href="#"><img src="http://www.w3cfuns.com/data/attachment/album/201409/05/191748l511rg51d9re1e11.jpg" /></a></li>
+		</ul>
+	</div>
+	
+	
+	<script>
+		var elem =  document.getElementById('scrollPic').children[0];
+		var elemChilds = elem.children;
+		var len = elemChilds.length;
+		var index = [];
+		 var timer;
+		for(var i = len-1; i >=0; i--)
+		{
+		
+			index[i] = elemChilds[i];
+			
+			elemChilds[i].style.left = (i-1) * 470+ 'px';
+			elemChilds[i].style.top = 0 + 'px';
+			elemChilds[i].style.position = 'absolute';
+		}
+
+		function moveTo(){
+			
+			var speedX = (-470 - parseInt(index[1].style.left)) / 8;
+			speedX = speedX >0 ? Math.ceil(speedX) : Math.floor(speedX);			
+			if(speedX == 0 )
+			{
+				clearInterval(timer);
+				index[0].style.left =  '1410px';
+			
+				var temp = index.shift();
+				index.push(temp);
+			}
+			else{
+				for(var j = 0; j <len; j++)
+					index[j].style.left = parseInt(index[j].style.left) + speedX + 'px';
+
+			}
+		
+		}
+		
+		setInterval(function(){timer = setInterval(moveTo,100);},5000);
+	</script>
+</body>
+</html>
